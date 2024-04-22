@@ -44,7 +44,6 @@ decide (distance(player1, player2) < 10) {
 
 repeat (player1.energy > 50) {
     player1.pass(player2);
-    // Suponha que cada passe reduz a energia de player1
     player1.energy = player1.energy - 5;
 }
 ```
