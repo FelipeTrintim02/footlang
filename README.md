@@ -6,37 +6,45 @@ ebnf
 ```
 program = { statement };
 
-statement = action_statement | decision | loop;
+statement = action_statement | decision | loop | assignment;
 
 action_statement = identifier, action, '(', [ identifier ], ')', ';';
 action = 'pass' | 'move';
 
-decision = 'decide', '(', condition, ')', '{', { statement }, '}', 'otherwise', '{', { statement }, '}';
+decision = 'decide', '(', expression, ')', '{', { statement }, '}', 'otherwise', '{', { statement }, '}';
 
-loop = 'repeat', '(', condition, ')', '{', { statement }, '}';
+loop = 'repeat', '(', expression, ')', '{', { statement }, '}';
 
-condition = expression, comparison_operator, expression;
-expression = identifier | number;
+assignment = identifier, '=', expression, ';';
+
+expression = identifier | number | property_access | function_call;
+property_access = identifier, '.', property;
+property = 'energy';
+function_call = 'distance', '(', identifier, ',', identifier, ')';
 comparison_operator = '>' | '<' | '==' | '!=';
 
 identifier = letter, { letter | digit };
 number = digit, { digit };
-letter = 'a' |'... '|'z' | 'A' |'...'| 'Z';
+letter = 'a' | '...' | 'Z';
 digit = '0' | '...' | '9';
+
 ```
 
 ## Example
 ```
-// Jogador1 passa a bola para Jogador2 se a distância for menor que 10, caso contrário, ele se move.
+player1;
+player2;
+newPosition = 30;
 
-decide (distance(jogador1, jogador2) < 10) {
-    jogador1.pass(jogador2);
+decide (distance(player1, player2) < 10) {
+    player1.pass(player2);
 } otherwise {
-    jogador1.move(newPosition);
+    player1.move(newPosition);
 }
 
-// Repete a ação de passar enquanto a energia do jogador1 for maior que 50.
-repeat (jogador1.energy > 50) {
-    jogador1.pass(jogador2);
+repeat (player1.energy > 50) {
+    player1.pass(player2);
+    // Suponha que cada passe reduz a energia de player1
+    player1.energy = player1.energy - 5;
 }
 ```
