@@ -1,0 +1,28 @@
+program = { statement };
+
+statement = assignment | loop | decision | block ;
+
+assignment = identifier, "=", expression, ";" ;
+
+loop = "repeat", "(", expression, ")", block ;
+
+decision = "decide", "(", expression, ")", block, ["otherwise", block] ;
+
+block = "{", { statement }, "}" ;
+
+expression = term, { ("+" | "-"), term };
+
+term = factor, { ("*" | "/"), factor };
+
+factor = integer 
+       | identifier 
+       | "(", expression, ")";
+
+integer = [ "-" ], digit, { digit };
+
+identifier = letter, { letter | digit | "." };
+
+relational_operator = ">" | "<" | "==" | "!=" | ">=" | "<=" ;
+
+letter = "a" | "..." | "z" | "A" | "..." | "Z";
+digit = "0" | "..." | "9";

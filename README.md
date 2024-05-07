@@ -6,44 +6,82 @@ ebnf
 ```
 program = { statement };
 
-statement = action_statement | decision | loop | assignment;
+statement = assignment | loop | decision | block ;
 
-action_statement = identifier, action, '(', [ identifier ], ')', ';';
-action = 'pass' | 'move';
+assignment = identifier, "=", expression, ";" ;
 
-decision = 'decide', '(', expression, ')', '{', { statement }, '}', 'otherwise', '{', { statement }, '}';
+loop = "repeat", "(", expression, ")", block ;
 
-loop = 'repeat', '(', expression, ')', '{', { statement }, '}';
+decision = "decide", "(", expression, ")", block, ["otherwise", block] ;
 
-assignment = identifier, '=', expression, ';';
+block = "{", { statement }, "}" ;
 
-expression = identifier | number | property_access | function_call;
-property_access = identifier, '.', property;
-property = 'energy';
-function_call = 'distance', '(', identifier, ',', identifier, ')';
-comparison_operator = '>' | '<' | '==' | '!=';
+expression = term, { ("+" | "-"), term };
 
-identifier = letter, { letter | digit };
-number = digit, { digit };
-letter = 'a' | '...' | 'Z';
-digit = '0' | '...' | '9';
+term = factor, { ("*" | "/"), factor };
 
+factor = integer 
+       | identifier 
+       | "(", expression, ")";
+
+integer = [ "-" ], digit, { digit };
+
+identifier = letter, { letter | digit | "." };
+
+relational_operator = ">" | "<" | "==" | "!=" | ">=" | "<=" ;
+
+letter = "a" | "..." | "z" | "A" | "..." | "Z";
+digit = "0" | "..." | "9";
 ```
 
 ## Example
 ```
-player1;
-player2;
-newPosition = 30;
+player.energy = 100;
+player.positionx = 0;
+player.positiony = 0;
 
-decide (distance(player1, player2) < 10) {
-    player1.pass(player2);
-} otherwise {
-    player1.move(newPosition);
+repeat (player.energy > 20) {
+    player.energy = player.energy - 20;
+    player.positionx = player.positionx + 10;
+    decide (player.positionx > 100) {
+        player.positionx = 0;
+        player.positiony = player.positiony + 10;
+    }
+    otherwise {
+        player.positionx = player.positionx + 10;
+    }
 }
 
-repeat (player1.energy > 50) {
-    player1.pass(player2);
-    player1.energy = player1.energy - 5;
+```
+
+## Example2
+```
+player1.energy = 100;
+player2.energy = 100;
+player1.positionx = 0;
+player2.positionx = 50;
+
+repeat (player1.energy > 20) {
+    player1.positionx = player1.positionx + 5;
+    player2.positionx = player2.positionx - 5;
+    player1.energy = player1.energy - 10;
+    player2.energy = player2.energy - 10;
+
+    decide (player1.positionx > player2.positionx) {
+        decide (player1.energy < 30) {
+            player1.energy = player1.energy + 20;
+        }
+        otherwise {
+            player1.energy = player1.energy - 5;
+        }
+    }
+    otherwise {
+        decide (player2.energy < 30) {
+            player2.energy = player2.energy + 20;
+        }
+        otherwise {
+            player2.energy = player2.energy - 5;
+        }
+    }
 }
 ```

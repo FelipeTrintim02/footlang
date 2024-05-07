@@ -1,0 +1,28 @@
+player1.energy = 100;
+player2.energy = 100;
+player1.positionx = 0;
+player2.positionx = 50;
+
+repeat (player1.energy > 20) {
+    player1.positionx = player1.positionx + 5;
+    player2.positionx = player2.positionx - 5;
+    player1.energy = player1.energy - 10;
+    player2.energy = player2.energy - 10;
+
+    decide (player1.positionx > player2.positionx) {
+        decide (player1.energy < 30) {
+            player1.energy = player1.energy + 20;
+        }
+        otherwise {
+            player1.energy = player1.energy - 5;
+        }
+    }
+    otherwise {
+        decide (player2.energy < 30) {
+            player2.energy = player2.energy + 20;
+        }
+        otherwise {
+            player2.energy = player2.energy - 5;
+        }
+    }
+}

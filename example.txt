@@ -1,0 +1,15 @@
+player.energy = 100;
+player.positionx = 0;
+player.positiony = 0;
+
+repeat (player.energy > 20) {
+    player.energy = player.energy - 20;
+    player.positionx = player.positionx + 10;
+    decide (player.positionx > 100) {
+        player.positionx = 0;
+        player.positiony = player.positiony + 10;
+    }
+    otherwise {
+        player.positionx = player.positionx + 10;
+    }
+}
