@@ -54,32 +54,21 @@ extern int yydebug;
     YYEOF = 0,                     /* "end of file"  */
     YYerror = 256,                 /* error  */
     YYUNDEF = 257,                 /* "invalid token"  */
-    IDENTIFIER = 258,              /* IDENTIFIER  */
-    PROPERTY = 259,                /* PROPERTY  */
-    NUMBER = 260,                  /* NUMBER  */
-    PASS = 261,                    /* PASS  */
-    MOVE = 262,                    /* MOVE  */
-    DECIDE = 263,                  /* DECIDE  */
-    OTHERWISE = 264,               /* OTHERWISE  */
-    REPEAT = 265,                  /* REPEAT  */
-    ENERGY = 266,                  /* ENERGY  */
-    POSITIONX = 267,               /* POSITIONX  */
-    POSITIONY = 268,               /* POSITIONY  */
-    PLUS = 269,                    /* PLUS  */
-    MINUS = 270,                   /* MINUS  */
-    MULT = 271,                    /* MULT  */
-    DIV = 272,                     /* DIV  */
-    GT = 273,                      /* GT  */
-    LT = 274,                      /* LT  */
-    EQ = 275,                      /* EQ  */
-    NEQ = 276,                     /* NEQ  */
-    LBRACE = 277,                  /* LBRACE  */
-    RBRACE = 278,                  /* RBRACE  */
-    LPAREN = 279,                  /* LPAREN  */
-    RPAREN = 280,                  /* RPAREN  */
-    SEMICOLON = 281,               /* SEMICOLON  */
-    COMMA = 282,                   /* COMMA  */
-    ASSIGN = 283                   /* ASSIGN  */
+    REPEAT = 258,                  /* REPEAT  */
+    DECIDE = 259,                  /* DECIDE  */
+    OTHERWISE = 260,               /* OTHERWISE  */
+    WINNER = 261,                  /* WINNER  */
+    VELOCITY = 262,                /* VELOCITY  */
+    ENERGY = 263,                  /* ENERGY  */
+    IDENTIFIER = 264,              /* IDENTIFIER  */
+    INTEGER = 265,                 /* INTEGER  */
+    STRING = 266,                  /* STRING  */
+    GE = 267,                      /* GE  */
+    LE = 268,                      /* LE  */
+    EQ = 269,                      /* EQ  */
+    NE = 270,                      /* NE  */
+    AND = 271,                     /* AND  */
+    OR = 272                       /* OR  */
   };
   typedef enum yytokentype yytoken_kind_t;
 #endif
@@ -88,12 +77,12 @@ extern int yydebug;
 #if ! defined YYSTYPE && ! defined YYSTYPE_IS_DECLARED
 union YYSTYPE
 {
-#line 10 "parser.y"
+#line 14 "parser.y"
 
-    int num;      // Para armazenar valores numéricos
-    char* str;    // Para armazenar strings
+    int ival;
+    char *sval;
 
-#line 97 "parser.tab.h"
+#line 86 "parser.tab.h"
 
 };
 typedef union YYSTYPE YYSTYPE;

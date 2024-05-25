@@ -1,6 +1,6 @@
 program = { statement };
 
-statement = assignment | loop | decision | block ;
+statement = assignment | loop | decision | block | winner_statement ;
 
 assignment = identifier, "=", expression, ";" ;
 
@@ -10,19 +10,23 @@ decision = "decide", "(", expression, ")", block, ["otherwise", block] ;
 
 block = "{", { statement }, "}" ;
 
-expression = term, { ("+" | "-"), term };
+expression = term, { ("+" | "-" | "*" | "/" | ">" | "<" | "==" | "!=" | ">=" | "<=" | "&&" | "||"), term };
 
-term = factor, { ("*" | "/"), factor };
+term = factor ;
 
 factor = integer 
        | identifier 
-       | "(", expression, ")";
+       | "(", expression, ")" ;
 
-integer = [ "-" ], digit, { digit };
+integer = [ "-" ], digit, { digit } ;
 
-identifier = letter, { letter | digit | "." };
+identifier = predefined_identifier ;
 
-relational_operator = ">" | "<" | "==" | "!=" | ">=" | "<=" ;
+predefined_identifier = identifier, ".", ("velocity" | "energy") ;
 
-letter = "a" | "..." | "z" | "A" | "..." | "Z";
-digit = "0" | "..." | "9";
+winner_statement = "winner", "(", string, ")", ";" ;
+
+string = '"', { letter | digit | " " }, '"' ;
+
+letter = "a" | "..." | "z" | "A" | "..." | "Z" ;
+digit = "0" | "..." | "9" ;

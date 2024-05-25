@@ -1,15 +1,22 @@
-player.energy = 100;
-player.positionx = 0;
-player.positiony = 0;
+runner1.energy = 100;
+runner2.energy = 100;
+runner1.velocity = 0;
+runner2.velocity = 0;
 
-repeat (player.energy > 20) {
-    player.energy = player.energy - 20;
-    player.positionx = player.positionx + 10;
-    decide (player.positionx > 100) {
-        player.positionx = 0;
-        player.positiony = player.positiony + 10;
+repeat (runner1.energy > 20 && runner2.energy > 20) {
+    runner1.velocity = runner1.velocity + 10;
+    runner2.velocity = runner2.velocity + 8;
+    runner1.energy = runner1.energy - 15;
+    runner2.energy = runner2.energy - 12;
+
+    decide (runner1.velocity > 100) {
+        winner("Runner 1 wins!");
     }
     otherwise {
-        player.positionx = player.positionx + 10;
+        decide (runner2.velocity > 100) {
+            winner("Runner 2 wins!");
+        }
     }
 }
+
+winner("Race ended!");

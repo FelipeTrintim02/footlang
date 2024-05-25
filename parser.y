@@ -3,112 +3,109 @@
 #include <stdlib.h>
 #include <string.h>
 
-extern int yylex();
 void yyerror(const char *s);
+int yylex(void);
+
+extern int yylineno;
+extern char *yytext;
+
 %}
 
 %union {
-    int num;      // Para armazenar valores numéricos
-    char* str;    // Para armazenar strings
+    int ival;
+    char *sval;
 }
 
-%token <str> IDENTIFIER PROPERTY
-%token <num> NUMBER
-%token PASS MOVE DECIDE OTHERWISE REPEAT ENERGY POSITIONX POSITIONY
-%token PLUS MINUS MULT DIV GT LT EQ NEQ
-%token LBRACE RBRACE LPAREN RPAREN SEMICOLON COMMA ASSIGN
+%token REPEAT DECIDE OTHERWISE WINNER
+%token VELOCITY ENERGY IDENTIFIER
+%token INTEGER STRING
+%token GE LE EQ NE
+%token AND OR
 
-%type <num> expression number  // Definindo o tipo para 'number'
-%type <str> identifier property
+%left OR
+%left AND
+%left '>' '<' GE LE EQ NE
+%left '+' '-'
+%left '*' '/'
 
 %%
 
 program:
-        | program statement
-        ;
+    statement_list
+    ;
+
+statement_list:
+    statement
+    | statement_list statement
+    ;
 
 statement:
-          assignment
-        | decision
-        | loop
-        | action_statement
-        ;
+    assignment
+    | loop
+    | decision
+    | block
+    | winner_statement
+    ;
 
 assignment:
-        property ASSIGN expression SEMICOLON
-        {
-            printf("Assigning %s = %d\n", $1, $3);
-        }
-    | identifier ASSIGN expression SEMICOLON
-        {
-            printf("Assigning %s = %d\n", $1, $3);
-        }
-        ;
+    identifier '=' expression ';'
+    ;
+
+loop:
+    REPEAT '(' expression ')' block
+    ;
+
+decision:
+    DECIDE '(' expression ')' block
+    | DECIDE '(' expression ')' block OTHERWISE block
+    ;
+
+block:
+    '{' '}'
+    | '{' statement_list '}'
+    ;
 
 expression:
-          number
-        | identifier
-        | property
-        | expression PLUS expression
-        | expression MINUS expression
-        | expression MULT expression
-        | expression DIV expression
-        | expression GT expression
-        | expression LT expression
-        | expression EQ expression
-        | expression NEQ expression
-        ;
+    term
+    | expression '+' term
+    | expression '-' term
+    | expression '*' term
+    | expression '/' term
+    | expression '>' term
+    | expression '<' term
+    | expression GE term
+    | expression LE term
+    | expression EQ term
+    | expression NE term
+    | expression AND term
+    | expression OR term
+    ;
 
+term:
+    factor
+    ;
 
-property:
-    PROPERTY
-    {
-        $$ = strdup($1);
-    }
+factor:
+    INTEGER
+    | identifier
+    | '(' expression ')'
     ;
 
 identifier:
     IDENTIFIER
-    {
-        $$ = strdup($1);
-    }
     ;
 
-number:
-    NUMBER
-    {
-        $$ = $1; // Confirmado que 'number' é um inteiro.
-    }
-    ;
-
-loop:
-    REPEAT LPAREN expression RPAREN LBRACE program RBRACE
-    {
-        printf("Loop with condition.\n");
-    }
-    ;
-
-decision:
-    DECIDE LPAREN expression RPAREN LBRACE program RBRACE OTHERWISE LBRACE program RBRACE
-    {
-        printf("Decision made on condition.\n");
-    }
-    ;
-
-action_statement:
-    identifier LPAREN identifier RPAREN SEMICOLON
-    {
-        printf("Action: %s(%s)\n", $1, $3);
-    }
+winner_statement:
+    WINNER '(' STRING ')' ';'
     ;
 
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error: %s\n", s);
+    fprintf(stderr, "Error: %s at line %d, before token: %s\n", s, yylineno, yytext);
 }
 
 int main(void) {
-    yyparse();
-    return 0;
+    printf("Starting parsing...\n");
+    return yyparse();
 }

@@ -2,11 +2,12 @@
 
 <img src="./ebnf.png" width="100%">
 
-ebnf 
+ebnf
+
 ```
 program = { statement };
 
-statement = assignment | loop | decision | block ;
+statement = assignment | loop | decision | block | winner_statement ;
 
 assignment = identifier, "=", expression, ";" ;
 
@@ -16,72 +17,55 @@ decision = "decide", "(", expression, ")", block, ["otherwise", block] ;
 
 block = "{", { statement }, "}" ;
 
-expression = term, { ("+" | "-"), term };
+expression = term, { ("+" | "-" | "*" | "/" | ">" | "<" | "==" | "!=" | ">=" | "<=" | "&&" | "||"), term };
 
-term = factor, { ("*" | "/"), factor };
+term = factor ;
 
-factor = integer 
-       | identifier 
-       | "(", expression, ")";
+factor = integer
+       | identifier
+       | "(", expression, ")" ;
 
-integer = [ "-" ], digit, { digit };
+integer = [ "-" ], digit, { digit } ;
 
-identifier = letter, { letter | digit | "." };
+identifier = predefined_identifier ;
 
-relational_operator = ">" | "<" | "==" | "!=" | ">=" | "<=" ;
+predefined_identifier = identifier, ".", ("velocity" | "energy") ;
 
-letter = "a" | "..." | "z" | "A" | "..." | "Z";
-digit = "0" | "..." | "9";
+winner_statement = "winner", "(", string, ")", ";" ;
+
+string = '"', { letter | digit | " " }, '"' ;
+
+letter = "a" | "..." | "z" | "A" | "..." | "Z" ;
+digit = "0" | "..." | "9" ;
+
+
 ```
 
 ## Example
-```
-player.energy = 100;
-player.positionx = 0;
-player.positiony = 0;
 
-repeat (player.energy > 20) {
-    player.energy = player.energy - 20;
-    player.positionx = player.positionx + 10;
-    decide (player.positionx > 100) {
-        player.positionx = 0;
-        player.positiony = player.positiony + 10;
+```
+runner1.energy = 100;
+runner2.energy = 100;
+runner1.velocity = 0;
+runner2.velocity = 0;
+
+repeat (runner1.energy > 20 && runner2.energy > 20) {
+    runner1.velocity = runner1.velocity + 10;
+    runner2.velocity = runner2.velocity + 8;
+    runner1.energy = runner1.energy - 15;
+    runner2.energy = runner2.energy - 12;
+
+    decide (runner1.velocity > 100) {
+        winner("Runner 1 wins!");
     }
     otherwise {
-        player.positionx = player.positionx + 10;
+        decide (runner2.velocity > 100) {
+            winner("Runner 2 wins!");
+        }
     }
 }
 
-```
+winner("Race ended!");
 
-## Example2
-```
-player1.energy = 100;
-player2.energy = 100;
-player1.positionx = 0;
-player2.positionx = 50;
 
-repeat (player1.energy > 20) {
-    player1.positionx = player1.positionx + 5;
-    player2.positionx = player2.positionx - 5;
-    player1.energy = player1.energy - 10;
-    player2.energy = player2.energy - 10;
-
-    decide (player1.positionx > player2.positionx) {
-        decide (player1.energy < 30) {
-            player1.energy = player1.energy + 20;
-        }
-        otherwise {
-            player1.energy = player1.energy - 5;
-        }
-    }
-    otherwise {
-        decide (player2.energy < 30) {
-            player2.energy = player2.energy + 20;
-        }
-        otherwise {
-            player2.energy = player2.energy - 5;
-        }
-    }
-}
 ```
