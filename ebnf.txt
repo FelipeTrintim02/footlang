@@ -10,7 +10,7 @@ decision = "decide", "(", expression, ")", block, ["otherwise", block] ;
 
 block = "{", { statement }, "}" ;
 
-expression = term, { ("+" | "-" | "*" | "/" | ">" | "<" | "==" | "!=" | ">=" | "<=" | "&&" | "||"), term };
+expression = term, { ("+" | "-" | "*" | "/" | ">" | "<" | "==" | "!=" | ">=" | "<=" | "&&" | "||" | ".."), term };
 
 term = factor ;
 
