@@ -6,9 +6,6 @@
 void yyerror(const char *s);
 int yylex(void);
 
-extern int yylineno;
-extern char *yytext;
-
 %}
 
 %union {
@@ -16,22 +13,19 @@ extern char *yytext;
     char *sval;
 }
 
+%token <sval> IDENTIFIER STRING
+%token <ival> INTEGER
 %token REPEAT DECIDE OTHERWISE WINNER
-%token VELOCITY ENERGY IDENTIFIER
-%token INTEGER STRING
-%token GE LE EQ NE
-%token AND OR
+%token GE LE EQ NE AND OR
 
-%left OR
-%left AND
-%left '>' '<' GE LE EQ NE
-%left '+' '-'
-%left '*' '/'
+%type <sval> expression term factor identifier
+%type <sval> statement loop decision block winner_statement
 
 %%
 
 program:
     statement_list
+    { printf("Parsing completed successfully.\n"); }
     ;
 
 statement_list:
@@ -61,8 +55,8 @@ decision:
     ;
 
 block:
-    '{' '}'
-    | '{' statement_list '}'
+    '{' statement_list '}'
+    | '{' '}'
     ;
 
 expression:
@@ -86,9 +80,9 @@ term:
     ;
 
 factor:
-    INTEGER
-    | identifier
-    | '(' expression ')'
+    INTEGER              { $$ = (char*) malloc(20); sprintf($$, "%d", $1); }
+    | identifier        { $$ = strdup($1); }
+    | '(' expression ')' { $$ = strdup($2); }
     ;
 
 identifier:
@@ -97,12 +91,13 @@ identifier:
 
 winner_statement:
     WINNER '(' STRING ')' ';'
+    | WINNER '(' identifier ')' ';'
     ;
 
 %%
 
 void yyerror(const char *s) {
-    fprintf(stderr, "Error: %s at line %d, before token: %s\n", s, yylineno, yytext);
+    fprintf(stderr, "Error: %s\n", s);
 }
 
 int main(void) {

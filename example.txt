@@ -1,22 +1,47 @@
-runner1.energy = 100;
-runner2.energy = 100;
-runner1.velocity = 0;
+runner1.energy = 200;
+runner2.energy = 200;
+runner1.velocity = 10;
 runner2.velocity = 0;
 
-repeat (runner1.energy > 20 && runner2.energy > 20) {
-    runner1.velocity = runner1.velocity + 10;
-    runner2.velocity = runner2.velocity + 8;
-    runner1.energy = runner1.energy - 15;
-    runner2.energy = runner2.energy - 12;
+volta = 0;
 
-    decide (runner1.velocity > 100) {
-        winner("Runner 1 wins!");
+repeat (volta < 10) {
+    runner1.velocity = runner1.velocity + 10;
+    runner2.velocity = runner2.velocity + 11;
+    volta = volta + 1;
+
+    winner("volta: ");
+    winner(volta);
+
+    decide(runner1.velocity < runner2.velocity){
+        winner("runner2 esta ganhando com velocidade de:");
+        winner(runner2.velocity);
+        winner("runner1 esta perdendo com velocidade de:");
+        winner(runner1.velocity);
     }
-    otherwise {
-        decide (runner2.velocity > 100) {
-            winner("Runner 2 wins!");
-        }
+    otherwise{
+        winner("runner1 esta ganhando com velocidade de:");
+        winner(runner1.velocity);
+        winner("runner2 esta perdendo com velocidade de:");
+        winner(runner2.velocity);
     }
+
+    winner(" ");
 }
 
-winner("Race ended!");
+
+winner("chegada");
+decide(runner1.velocity > runner2.velocity){
+    winner("runner1 venceu com velocidade de:");
+    winner(runner1.velocity);
+    winner("runner2 perdeu com velocidade de:");
+    winner(runner2.velocity);
+
+}
+otherwise{
+    winner("runner2 venceu com velocidade de:");
+    winner(runner2.velocity);
+    winner("runner1 perdeu com velocidade de:");
+    winner(runner1.velocity);
+}
+
