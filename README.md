@@ -31,7 +31,7 @@ identifier = predefined_identifier ;
 
 predefined_identifier = identifier, ".", ("velocity" | "energy") ;
 
-winner_statement = "winner", "(", string, ")", ";" ;
+winner_statement = "winner", "(", (string | identifier), ")", ";" ;
 
 string = '"', { letter | digit | " " }, '"' ;
 
